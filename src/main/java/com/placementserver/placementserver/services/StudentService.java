@@ -1,5 +1,7 @@
 package com.placementserver.placementserver.services;
 
+import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -37,6 +39,15 @@ public class StudentService {
 	}
 	
 	public ApiResponse addStudent(Student students) {		
+		
+		LocalDate today = LocalDate.now();
+		int month = today.getMonthValue();
+		if((month >= 1) && (month <=6)) {
+			students.setSemester((short) (students.getYear()*2));
+		}
+		else {
+			students.setSemester((short) (students.getYear()*2 - 1));
+		}
 		
 		if (studentRepository.existsById(students.getRollno())) {
 	        return new ApiResponse("Failed", "Student already exist");

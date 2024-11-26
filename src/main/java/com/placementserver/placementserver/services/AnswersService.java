@@ -17,6 +17,7 @@ import com.placementserver.placementserver.responses.ApiResponse;
 import com.placementserver.placementserver.responses.DefaulterList;
 import com.placementserver.placementserver.responses.Response;
 import com.placementserver.placementserver.responses.ReturnAnswer;
+import com.placementserver.placementserver.responses.UnfinishedResponse;
 
 @Service
 public class AnswersService {
@@ -58,20 +59,25 @@ public class AnswersService {
 	
 	public Response<ReturnAnswer> getMark(long rollno) {
 		
-		List<Answers> response = answersRepository.findByRollno(rollno);
+		List<Object[]> response = answersRepository.findByRollno(rollno);
 		
 		List<ReturnAnswer> ansResponse = new ArrayList<>();
 		
-		for(Answers answers:response) {
-			ReturnAnswer returnAnswer = new ReturnAnswer(answers.getQuestionid(),answers.getMarkpercentage(),answers.getCorrect(),answers.getWrong());
+		for(Object[] answers:response) {
+			ReturnAnswer returnAnswer = new ReturnAnswer(
+					((Number) answers[0]).longValue(),
+					((Number) answers[1]).floatValue(),
+					((Number) answers[2]).intValue(),
+					((Number) answers[3]).intValue(),
+					(String) answers[4]);
 			ansResponse.add(returnAnswer);
 		}
 		
 		
 		
-		if(ansResponse.isEmpty()) {
-			return new Response<ReturnAnswer>("Failed","No Marks Available",ansResponse);
-		}
+//		if(ansResponse.isEmpty()) {
+//			return new Response<ReturnAnswer>("Failed","No Marks Available",ansResponse);
+//		}
 		
 		return new Response<ReturnAnswer>("Success","Marks Obtained",ansResponse);
 	}
@@ -109,10 +115,7 @@ public class AnswersService {
 		List<Object[]> response = answersRepository.findDefaultersAnswers(department, year, questionid);
 		
 		List<DefaulterList> defaultersList = new ArrayList<>();
-
-		if(response.size() == 0) {
-			return new Response<DefaulterList>("Failed","No defaulters", defaultersList);
-		}
+	
 		
 		for (Object[] result : response) {
 			DefaulterList defaulterList = new DefaulterList(
@@ -127,5 +130,22 @@ public class AnswersService {
 			defaultersList.add(defaulterList);
 	    }
 		return new Response<DefaulterList>("Success","The list of defaulters", defaultersList);
+	}
+
+	public Response<UnfinishedResponse> getUnfinished(long rollno) {
+		List<Object[]> response =  answersRepository.findUnfinished(rollno);
+		
+		List<UnfinishedResponse> result = new ArrayList<>();
+		
+		if(response.size() == 0) {
+			return new Response<UnfinishedResponse>("Success","All questions are answered",result);
+		}
+		
+		for(Object[] obj: response) {
+			UnfinishedResponse ufa = new UnfinishedResponse(((Number) obj[0]).longValue(),(String)obj[1],(String)obj[2]);
+			result.add(ufa);
+		}
+		
+		return new Response<UnfinishedResponse>("Success","Get the unfinished assessment list",result);
 	}
 }

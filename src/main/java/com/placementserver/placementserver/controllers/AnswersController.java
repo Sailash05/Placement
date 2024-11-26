@@ -16,6 +16,7 @@ import com.placementserver.placementserver.responses.ApiResponse;
 import com.placementserver.placementserver.responses.DefaulterList;
 import com.placementserver.placementserver.responses.Response;
 import com.placementserver.placementserver.responses.ReturnAnswer;
+import com.placementserver.placementserver.responses.UnfinishedResponse;
 import com.placementserver.placementserver.services.AnswersService;
 
 @RestController
@@ -48,6 +49,18 @@ public class AnswersController {
 		else {
 			return new ResponseEntity<>(response, HttpStatus.valueOf(409));
 		}
+	}
+	
+	@GetMapping("/getunfinished")
+	public ResponseEntity<Response<UnfinishedResponse>> getUnfinished(@RequestParam("rollno") long rollno) {
+		Response<UnfinishedResponse> response = answersService.getUnfinished(rollno);
+		if("Success".equals(response.getCondition())) {
+			return new ResponseEntity<>(response, HttpStatus.valueOf(201));
+		}
+		else {
+			return new ResponseEntity<>(response, HttpStatus.valueOf(409));
+		}
+		
 	}
 	
 	@GetMapping("/getmarkfilter")

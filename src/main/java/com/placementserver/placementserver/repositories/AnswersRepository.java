@@ -14,9 +14,13 @@ public interface AnswersRepository extends JpaRepository<Answers, Long>{
 	
 	@Query("SELECT a FROM Answers a WHERE a.student.rollno = :rollno AND a.questionid = :questionid")
     Answers findByRollnoAndQuestionid(@Param("rollno") long rollno, @Param("questionid") long questionid);
-
-    @Query("SELECT a FROM Answers a WHERE a.student.rollno = :rollno")
-    List<Answers> findByRollno(@Param("rollno") long rollno);
+	
+	
+    @Query(value = "SELECT answer.questionid, answer.markpercentage, answer.correct, answer.wrong, questiontitle.name"
+    		+ " FROM answer LEFT JOIN questiontitle ON answer.questionid = questiontitle.questionid"
+    		+ " WHERE (answer.rollno = :rollno)",
+    		nativeQuery = true)
+    List<Object[]> findByRollno(@Param("rollno") long rollno);
     
     @Query(value = "SELECT answer.markpercentage,answer.correct,answer.wrong,answer.questionid,"
     		+ " student.rollno,student.name,student.department,student.year,student.semester"
@@ -41,4 +45,10 @@ public interface AnswersRepository extends JpaRepository<Answers, Long>{
     		+ " (:questionid = 0 OR questiontitle.questionid = :questionid)",
     		nativeQuery=true)
 	List<Object[]> findDefaultersAnswers(String department, short year, long questionid);
+	
+	@Query(value = "SELECT questiontitle.questionid, questiontitle.name, questiontitle.filename"
+			+ " FROM questiontitle LEFT JOIN answer ON questiontitle.questionid = answer.questionid"
+			+ " AND (answer.rollno = :rollno) WHERE (answer.ansid IS NULL)",
+			nativeQuery = true)
+	List<Object[]> findUnfinished(long rollno);
 }
