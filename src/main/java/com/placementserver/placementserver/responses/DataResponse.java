@@ -1,12 +1,10 @@
 package com.placementserver.placementserver.responses;
 
-import com.placementserver.placementserver.models.Faculty;
-
-public class FacultyResponse {
+public class DataResponse<T> {
 	
 	private String condition;
 	private String message;
-	private ReturnFaculty returnFaculty;
+	private T datas;
 	public String getCondition() {
 		return condition;
 	}
@@ -19,17 +17,19 @@ public class FacultyResponse {
 	public void setMessage(String message) {
 		this.message = message;
 	}
-	public ReturnFaculty getReturnFaculty() {
-		return returnFaculty;
+	public T getDatas() {
+		return datas;
 	}
-	public void setReturnFaculty(ReturnFaculty returnFaculty) {
-		this.returnFaculty = returnFaculty;
+	public void setDatas(T datas) {
+		this.datas = datas;
 	}
-	public FacultyResponse(String condition, String message, Faculty faculty) {
+	public DataResponse() {
+		super();
+	}
+	public DataResponse(String condition, String message, T datas) {
 		super();
 		this.condition = condition;
 		this.message = message;
-		this.returnFaculty = new ReturnFaculty(faculty);
+		this.datas = datas;
 	}
-	
 }

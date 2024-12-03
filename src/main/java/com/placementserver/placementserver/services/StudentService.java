@@ -8,10 +8,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import com.placementserver.placementserver.models.Student;
 import com.placementserver.placementserver.repositories.StudentRepository;
-import com.placementserver.placementserver.responses.ApiResponse;
-import com.placementserver.placementserver.responses.StudentResponse;
+import com.placementserver.placementserver.responses.DataResponse;
+import com.placementserver.placementserver.responses.ReturnStudent;
 
 @Service
 public class StudentService {
@@ -27,18 +28,17 @@ public class StudentService {
 	
 	private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 	
-	public StudentResponse getStudent(long rollNo) {
+	public DataResponse<ReturnStudent> getStudent(long rollNo) {
 		
 		Student response = studentRepository.findByRollno(rollNo);
 		
 		if(response != null) {
-			return new StudentResponse("Success", "Student found", response);
+			return new DataResponse<>("Success","Student Found",new ReturnStudent(response));
 		}
-		
-		return new StudentResponse("Failed", "Student not found",new Student());
+		return new DataResponse<>("Failed","Student not found",new ReturnStudent(new Student()));
 	}
 	
-	public ApiResponse addStudent(Student students) {		
+	public DataResponse<String> addStudent(Student students) {		
 		
 		LocalDate today = LocalDate.now();
 		int month = today.getMonthValue();
@@ -50,25 +50,29 @@ public class StudentService {
 		}
 		
 		if (studentRepository.existsById(students.getRollno())) {
-	        return new ApiResponse("Failed", "Student already exist");
+	        return new DataResponse<>("Failed", "Student already exist",new String());
 	    }
 		
 		students.setPassword(encoder.encode(students.getPassword()));
 		
 	    studentRepository.save(students);
 	    
-	    return new ApiResponse("Success", "Student added successfully");
+	    return new DataResponse<>("Success", "Student added successfully",new String());
 	}
 	
-	public String loginStudent(Student students) {
-		
+	public DataResponse<String> loginStudent(Student students) {
+		String token = new String();
+		if(!studentRepository.existsById(students.getRollno())) {
+			return new DataResponse<>("Failed","Student Not Found",new String());
+		}
 		Authentication authentication = 
 				authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(String.valueOf(students.getRollno()),students.getPassword()));
 		if(authentication.isAuthenticated()) {
-			return jwtService.generateToken(String.valueOf(students.getRollno()));
+			token =  jwtService.generateToken(String.valueOf(students.getRollno()));
 		}
 		else {
-			return "failed";
+			token =  "failed";
 		}		
+		return new DataResponse<>("Success","Collect your JWT Token",token);
 	}
 }

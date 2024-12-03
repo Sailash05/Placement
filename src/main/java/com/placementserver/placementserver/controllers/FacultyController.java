@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.placementserver.placementserver.models.Faculty;
-import com.placementserver.placementserver.responses.ApiResponse;
-import com.placementserver.placementserver.responses.FacultyResponse;
-import com.placementserver.placementserver.responses.TokenResponse;
+import com.placementserver.placementserver.responses.DataResponse;
+import com.placementserver.placementserver.responses.ReturnFaculty;
 import com.placementserver.placementserver.services.FacultyService;
 
 @RestController
@@ -23,21 +23,24 @@ public class FacultyController {
 	private FacultyService facultyService;
 	
 	@GetMapping("/getfaculty")
-	public ResponseEntity<FacultyResponse> getFaculty(@RequestParam("mobileno") long mobileno) {
+	public ResponseEntity<DataResponse<ReturnFaculty>> getFaculty(@RequestParam("mobileno") long mobileno) {
 		
-		FacultyResponse response = facultyService.getFaculty(mobileno);
+		DataResponse<ReturnFaculty> response = facultyService.getFaculty(mobileno);
 				
 		if("Success".equals(response.getCondition())) {
-			return new ResponseEntity<>(response, HttpStatus.valueOf(201));
+			return new ResponseEntity<>(response, HttpStatus.valueOf(200));
+		}
+		else {
+			return new ResponseEntity<>(response, HttpStatus.valueOf(404));
 		}
 		
-		return new ResponseEntity<>(response, HttpStatus.valueOf(409));
+		
 	}
 	
 	@PostMapping("/addfaculty")
-	public ResponseEntity<ApiResponse> addFaculty(@RequestBody Faculty faculty) {
+	public ResponseEntity<DataResponse<String>> addFaculty(@RequestBody Faculty faculty) {
 
-		ApiResponse response = facultyService.addFaculty(faculty);
+		DataResponse<String> response = facultyService.addFaculty(faculty);
 		
 		if("Success".equals(response.getCondition())) {
 			return new ResponseEntity<>(response, HttpStatus.valueOf(201));
@@ -47,11 +50,13 @@ public class FacultyController {
 	}
 	
 	@PostMapping("/loginfaculty")
-	public ResponseEntity<TokenResponse> loginFaculty(@RequestBody Faculty faculty) { //ResponseEntity<ApiResponse>
-		
-		String token = facultyService.loginFaculty(faculty);
-		TokenResponse tokenResponse = new TokenResponse("Success","Collect your JWT Token",token);
-		
-		return new ResponseEntity<>(tokenResponse, HttpStatus.valueOf(201));
+	public ResponseEntity<DataResponse<String>> loginFaculty(@RequestBody Faculty faculty) {
+		DataResponse<String> dataResponse = facultyService.loginFaculty(faculty);
+		if(dataResponse.getCondition().equals("Success")) {
+			return new ResponseEntity<>(dataResponse, HttpStatus.valueOf(200));
+		}
+		else {
+			return new ResponseEntity<>(dataResponse, HttpStatus.valueOf(404));
+		}
 	}
 }

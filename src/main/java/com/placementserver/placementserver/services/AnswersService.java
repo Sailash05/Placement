@@ -13,9 +13,8 @@ import com.placementserver.placementserver.models.StudentAnswer;
 import com.placementserver.placementserver.repositories.AnswersRepository;
 import com.placementserver.placementserver.repositories.QuestionsTitleRepository;
 import com.placementserver.placementserver.repositories.StudentRepository;
-import com.placementserver.placementserver.responses.ApiResponse;
+import com.placementserver.placementserver.responses.DataResponse;
 import com.placementserver.placementserver.responses.DefaulterList;
-import com.placementserver.placementserver.responses.Response;
 import com.placementserver.placementserver.responses.ReturnAnswer;
 import com.placementserver.placementserver.responses.UnfinishedResponse;
 
@@ -31,12 +30,12 @@ public class AnswersService {
 	@Autowired
 	private QuestionsTitleRepository questionsTitleRepository;
 	
-	public ApiResponse addMark(Answers answers) {
+	public DataResponse<String> addMark(Answers answers) {
 
 		Student student = studentRepository.findByRollno(answers.getStudent().getRollno());
 			
 		if(student == null) {
-			return new ApiResponse("Failed", "Student not found");
+			return new DataResponse<>("Failed", "Student not found",new String());
 		}
 		
 		answers.setStudent(student);
@@ -44,20 +43,20 @@ public class AnswersService {
 		Answers response = answersRepository.findByRollnoAndQuestionid(answers.getStudent().getRollno(), answers.getQuestionid());
 		
 		if(response != null) {
-			return new ApiResponse("Failed","Already summited the answer for this question id");
+			return new DataResponse<>("Failed","Already summited the answer for this question id",new String());
 		}
 		
 		QuestionsTitle questionsTitle = questionsTitleRepository.findByQuestionid(answers.getQuestionid());
 		
 		if(questionsTitle == null) {
-			return new ApiResponse("Failed","The question id is not matched");
+			return new DataResponse<>("Failed","The question id is not matched",new String());
 		}
 		
 		answersRepository.save(answers);
-		return new ApiResponse("Success","Answers was summitted");
+		return new DataResponse<>("Success","Answers was summitted",new String());
 	}
 	
-	public Response<ReturnAnswer> getMark(long rollno) {
+	public DataResponse<List<ReturnAnswer>> getMark(long rollno) {
 		
 		List<Object[]> response = answersRepository.findByRollno(rollno);
 		
@@ -72,17 +71,14 @@ public class AnswersService {
 					(String) answers[4]);
 			ansResponse.add(returnAnswer);
 		}
+		if(ansResponse.isEmpty()) {
+			return new DataResponse<>("Failed","No Marks Available",ansResponse);
+		}
 		
-		
-		
-//		if(ansResponse.isEmpty()) {
-//			return new Response<ReturnAnswer>("Failed","No Marks Available",ansResponse);
-//		}
-		
-		return new Response<ReturnAnswer>("Success","Marks Obtained",ansResponse);
+		return new DataResponse<>("Success","Marks Obtained",ansResponse);
 	}
 
-	public Response<StudentAnswer> getMarkFilter(String department, short year, long questionid, int top) {
+	public DataResponse<List<StudentAnswer>> getMarkFilter(String department, short year, long questionid, int top) {
 		
 		List<Object[]> response = answersRepository.findFilteredAnswers(department, year, questionid);
 		
@@ -107,15 +103,14 @@ public class AnswersService {
 	        if(++count == top)
 	        	break;
 	    }
-		return new Response<StudentAnswer>("Success","Received the marks of students list",studentAnswers);
+		return new DataResponse<>("Success","Received the marks of students list",studentAnswers);
 	}
 
-	public Response<DefaulterList> getDefaulters(String department, short year, long questionid) {
+	public DataResponse<List<DefaulterList>> getDefaulters(String department, short year, long questionid) {
 		
 		List<Object[]> response = answersRepository.findDefaultersAnswers(department, year, questionid);
 		
 		List<DefaulterList> defaultersList = new ArrayList<>();
-	
 		
 		for (Object[] result : response) {
 			DefaulterList defaulterList = new DefaulterList(
@@ -125,20 +120,20 @@ public class AnswersService {
 	            ((Number) result[3]).shortValue(),	  // year
 	            ((Number) result[4]).shortValue(),   // semester
 	            ((Number) result[5]).longValue(),	// name
-	            (String) result[6] 				   // question name                
+	            (String) result[6] 				   // question name
 	        );
 			defaultersList.add(defaulterList);
 	    }
-		return new Response<DefaulterList>("Success","The list of defaulters", defaultersList);
+		return new DataResponse<>("Success","The list of defaulters", defaultersList);
 	}
 
-	public Response<UnfinishedResponse> getUnfinished(long rollno) {
+	public DataResponse<List<UnfinishedResponse>> getUnfinished(long rollno) {
 		List<Object[]> response =  answersRepository.findUnfinished(rollno);
 		
 		List<UnfinishedResponse> result = new ArrayList<>();
 		
 		if(response.size() == 0) {
-			return new Response<UnfinishedResponse>("Success","All questions are answered",result);
+			return new DataResponse<>("Success","All questions are answered",result);
 		}
 		
 		for(Object[] obj: response) {
@@ -146,6 +141,6 @@ public class AnswersService {
 			result.add(ufa);
 		}
 		
-		return new Response<UnfinishedResponse>("Success","Get the unfinished assessment list",result);
+		return new DataResponse<>("Success","Get the unfinished assessment list",result);
 	}
 }

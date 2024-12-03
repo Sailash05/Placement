@@ -17,8 +17,7 @@ import com.placementserver.placementserver.models.Questions;
 import com.placementserver.placementserver.models.QuestionsTitle;
 import com.placementserver.placementserver.repositories.QuestionsRepository;
 import com.placementserver.placementserver.repositories.QuestionsTitleRepository;
-import com.placementserver.placementserver.responses.ApiResponse;
-import com.placementserver.placementserver.responses.Response;
+import com.placementserver.placementserver.responses.DataResponse;
 
 @Service
 public class QuestionsService {
@@ -29,7 +28,7 @@ public class QuestionsService {
 	@Autowired
 	private QuestionsRepository questionsRepository;
 	
-	public ApiResponse addQuestionsFile(String name, MultipartFile file) {
+	public DataResponse<String> addQuestionsFile(String name, MultipartFile file) {
 		
 		QuestionsTitle questionsTitle = new QuestionsTitle(name, file.getOriginalFilename());
 		questionsTitleRepository.save(questionsTitle);
@@ -78,38 +77,37 @@ public class QuestionsService {
 	        	
 	        }
 	        
-	        return new ApiResponse("Success","Questions added");
+	        return new DataResponse<>("Success","Questions added",new String());
 	        
 		}
 		catch (IOException e) {
-            return new ApiResponse("Failed","Failed to add");
+            return new DataResponse<>("Failed","Failed to add",new String());
         }
 	}
 	
 	
 	
-	public Response<Questions> getQuestions(long questionNo) {
+	public DataResponse<List<Questions>> getQuestions(long questionNo) {
 		
 		List<Questions> response = questionsRepository.findByQuestionid(questionNo);
 		
 		if(response.size() == 0) {
-			return new Response<Questions>("Failed","Wrong Question Id",response);
+			return new DataResponse<List<Questions>>("Failed","Wrong Question Id",response);
 		}
 		
-		return new Response<Questions>("Success","Questions Received",response);
+		return new DataResponse<List<Questions>>("Success","Questions Received",response);
 		
 	}
 	
-	
-	public Response<QuestionsTitle> getQuestionsTitle() {
+	public DataResponse<List<QuestionsTitle>> getQuestionsTitle() {
 		
 		List<QuestionsTitle> response = questionsTitleRepository.findAll();
 		
 		if(response.size() == 0) {
-			return new Response<QuestionsTitle>("Failed","No Questions title available",response);
+			return new DataResponse<List<QuestionsTitle>>("Failed","No Questions title available",response);
 		}
 		
-		return new Response<QuestionsTitle>("Success","Questions tile received",response);
+		return new DataResponse<List<QuestionsTitle>>("Success","Questions tile received",response);
 	}
 	
 	

@@ -11,9 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.placementserver.placementserver.models.Student;
-import com.placementserver.placementserver.responses.ApiResponse;
-import com.placementserver.placementserver.responses.StudentResponse;
-import com.placementserver.placementserver.responses.TokenResponse;
+import com.placementserver.placementserver.responses.DataResponse;
+import com.placementserver.placementserver.responses.ReturnStudent;
 import com.placementserver.placementserver.services.StudentService;
 
 @RestController
@@ -24,21 +23,21 @@ public class StudentController {
 	private StudentService studentService;
 	
 	@GetMapping("/getstudent")
-	public ResponseEntity<StudentResponse> getStudents(@RequestParam("rollno") long rollNo) {
+	public ResponseEntity<DataResponse<ReturnStudent>> getStudents(@RequestParam("rollno") long rollNo) {
 		
-		StudentResponse response = studentService.getStudent(rollNo);
-		
+		DataResponse<ReturnStudent> response = studentService.getStudent(rollNo);
 		if("Success".equals(response.getCondition())) {
-			return new ResponseEntity<>(response, HttpStatus.valueOf(201));
+			return new ResponseEntity<>(response, HttpStatus.valueOf(200));
+		}
+		else {
+			return new ResponseEntity<>(response, HttpStatus.valueOf(404));
 		}
 		
-		return new ResponseEntity<>(response, HttpStatus.valueOf(409));
 	}
 	
 	@PostMapping("/addstudent")
-	public ResponseEntity<ApiResponse> addStudent(@RequestBody Student student) {
-		
-		ApiResponse response = studentService.addStudent(student);
+	public ResponseEntity<DataResponse<String>> addStudent(@RequestBody Student student) {
+		DataResponse<String> response = studentService.addStudent(student);
 		
 		if("Success".equals(response.getCondition())) {
 			return new ResponseEntity<>(response, HttpStatus.valueOf(201));
@@ -48,11 +47,14 @@ public class StudentController {
 	}
 	
 	@PostMapping("/loginstudent")
-	public ResponseEntity<TokenResponse> loginStudent(@RequestBody Student student) {
-		
-		String token = studentService.loginStudent(student);
-		TokenResponse tokenResponse = new TokenResponse("Success","Collect your JWT Token",token);
-		
-		return new ResponseEntity<>(tokenResponse, HttpStatus.valueOf(201));
+	public ResponseEntity<DataResponse<String>> loginStudent(@RequestBody Student student) {
+
+		DataResponse<String> dataResponse = studentService.loginStudent(student);
+		if(dataResponse.getCondition().equals("Success")) {
+			return new ResponseEntity<>(dataResponse, HttpStatus.valueOf(200));
+		}
+		else {
+			return new ResponseEntity<>(dataResponse, HttpStatus.valueOf(404));
+		}
 	}
 }
