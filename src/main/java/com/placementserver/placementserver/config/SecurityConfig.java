@@ -46,17 +46,6 @@ public class SecurityConfig {
 
 	    return http.build();
 
-		/*
-		
-		http.csrf(csrf -> csrf.disable())  // Disable CSRF protection
-	        .authorizeRequests(auth -> 
-	            auth.requestMatchers("/student/addstudent", "/faculty/addfaculty").permitAll()  // Allow signup without authentication
-            .anyRequest().authenticated())  // Authenticate all other requests
-	        .httpBasic(Customizer.withDefaults())  // Use HTTP basic authentication
-	        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));  // Stateless session
-
-    	return http.build();
-    */	
 	}
 	
 	@Bean
