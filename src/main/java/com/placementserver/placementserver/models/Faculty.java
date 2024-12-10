@@ -18,6 +18,8 @@ public class Faculty {
 	private String password;
 	@Column(name="department")
 	private String department;
+	@Column(name="email")
+	private String email;
 	
 	public long getMobileno() {
 		return mobileno;
@@ -43,17 +45,22 @@ public class Faculty {
 	public void setDepartment(String department) {
 		this.department = department;
 	}
-	
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 	public Faculty() {
 		super();
 	}
-	
-	public Faculty(long mobileno, String name, String password, String department) {
-		super();
-		this.mobileno = mobileno;
-		this.name = name;
-		this.password = password;
+
+	public Faculty(String email, String department, String password, String name, long mobileno) {
+		this.email = email;
 		this.department = department;
+		this.password = password;
+		this.name = name;
+		this.mobileno = mobileno;
 	}
-	
 }

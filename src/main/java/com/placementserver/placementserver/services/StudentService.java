@@ -25,10 +25,13 @@ public class StudentService {
 	
 	@Autowired
 	private JWTService jwtService;
-	
-	private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
-	
-	public DataResponse<ReturnStudent> getStudent(long rollNo) {
+
+	@Autowired
+	private EmailService emailService;
+
+	private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
+
+    public DataResponse<ReturnStudent> getStudent(long rollNo) {
 		
 		Student response = studentRepository.findByRollno(rollNo);
 		
@@ -38,11 +41,10 @@ public class StudentService {
 		return new DataResponse<>("Failed","Student not found",new ReturnStudent(new Student()));
 	}
 	
-	public DataResponse<String> addStudent(Student students) {		
-		
+	public DataResponse<String> addStudent(Student students) {
 		LocalDate today = LocalDate.now();
 		int month = today.getMonthValue();
-		if((month >= 1) && (month <=6)) {
+		if(month <=6) {
 			students.setSemester((short) (students.getYear()*2));
 		}
 		else {
@@ -50,29 +52,73 @@ public class StudentService {
 		}
 		
 		if (studentRepository.existsById(students.getRollno())) {
-	        return new DataResponse<>("Failed", "Student already exist",new String());
+	        return new DataResponse<>("Failed", "Student already exist", "");
 	    }
 		
 		students.setPassword(encoder.encode(students.getPassword()));
 		
 	    studentRepository.save(students);
 	    
-	    return new DataResponse<>("Success", "Student added successfully",new String());
+	    return new DataResponse<>("Success", "Student added successfully", "");
 	}
-	
+
 	public DataResponse<String> loginStudent(Student students) {
-		String token = new String();
+		String token;
 		if(!studentRepository.existsById(students.getRollno())) {
-			return new DataResponse<>("Failed","Student Not Found",new String());
+			return new DataResponse<>("Failed","Student Not Found", "");
 		}
 		Authentication authentication = 
 				authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(String.valueOf(students.getRollno()),students.getPassword()));
 		if(authentication.isAuthenticated()) {
-			token =  jwtService.generateToken(String.valueOf(students.getRollno()));
+			token =  jwtService.generateToken(String.valueOf(students.getRollno()), "student","login");
 		}
 		else {
 			token =  "failed";
 		}		
 		return new DataResponse<>("Success","Collect your JWT Token",token);
+	}
+
+	public DataResponse<String> updateStudent(Student student) {
+		if(!studentRepository.existsById(student.getRollno())) {
+			return new DataResponse<>("Failed","Student Not Found", "");
+		}
+		int noOfRowsAffected = studentRepository.updateStudent(student.getRollno(),
+				student.getName(),
+				student.getYear(),
+				student.getDepartment(),
+				student.getEmail(),
+				student.getMobileno());
+		if(noOfRowsAffected >= 1) {
+			return new DataResponse<>("Success","Student details updated","");
+		}
+		return new DataResponse<>("Failed","Wrong update","");
+	}
+
+	public DataResponse<String> resetRequest(Student student) {
+		if(!studentRepository.existsById(student.getRollno())) {
+			return new DataResponse<>("Failed","Student Not Found", "");
+		}
+		Student response = studentRepository.findByRollno(student.getRollno());
+		if(response.getEmail() == null && student.getEmail() == null) {
+			return new DataResponse<>("Failed","Email not found","");
+		}
+		String email = student.getEmail() == null ? response.getEmail() : student.getEmail();
+		String name = studentRepository.findByRollno(student.getRollno()).getName();
+		String token =  jwtService.generateResetToken(String.valueOf(student.getRollno()),"student","reset request");
+		emailService.sendResetRequest(name,student.getRollno(),email,token);
+		return new DataResponse<>("Success","Reset token is sent to your email","");
+	}
+
+	public DataResponse<String> resetPassword(Student student) {
+		if(!studentRepository.existsById(student.getRollno())) {
+			return new DataResponse<>("Failed","Student Not Found","");
+		}
+		if (student.getPassword() == null || student.getPassword().isEmpty()) {
+			return new DataResponse<>("Failed", "Password cannot be null or empty", "");
+		}
+		Student response = studentRepository.findByRollno(student.getRollno());
+		response.setPassword(encoder.encode(student.getPassword()));
+		studentRepository.save(response);
+		return new DataResponse<>("Success","Password changed","");
 	}
 }

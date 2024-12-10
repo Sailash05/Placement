@@ -7,6 +7,8 @@ public class ReturnFaculty {
 	private String name;
 	private String department;
 	private long mobileno;
+	private String email;
+
 	public String getName() {
 		return name;
 	}
@@ -25,11 +27,19 @@ public class ReturnFaculty {
 	public void setMobileno(long mobileno) {
 		this.mobileno = mobileno;
 	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 	public ReturnFaculty(Faculty faculty) {
 		super();
 		this.name = faculty.getName();
 		this.department = faculty.getDepartment();
 		this.mobileno = faculty.getMobileno();
+		this.email = faculty.getEmail();
 	}
 	
 }

@@ -25,7 +25,11 @@ public class Student {
 	private String department;
 	@Column(name="password")
 	private String password;
-	
+	@Column(name = "email")
+	private String email;
+	@Column(name = "mobileno")
+	private long mobileno;
+
 	public long getRollno() {
 		return rollno;
 	}
@@ -62,18 +66,31 @@ public class Student {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+	public long getMobileno() {
+		return mobileno;
+	}
+	public void setMobileno(long mobileno) {
+		this.mobileno = mobileno;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 	public Student() {
 		super();
 	}
-	
-	public Student(long rollno, String name, short year, short semester, String department, String password) {
-		super();
+
+	public Student(long rollno, String name, short year, short semester, String department, String password, String email, long mobileno) {
 		this.rollno = rollno;
 		this.name = name;
 		this.year = year;
 		this.semester = semester;
 		this.department = department;
 		this.password = password;
+		this.email = email;
+		this.mobileno = mobileno;
 	}
 }

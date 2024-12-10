@@ -5,7 +5,8 @@ public class DataResponse<T> {
 	private String condition;
 	private String message;
 	private T datas;
-	public String getCondition() {
+
+    public String getCondition() {
 		return condition;
 	}
 	public void setCondition(String condition) {

@@ -18,7 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.placementserver.placementserver.services.CustomUserDetailsService;
 
 @Configuration
-@EnableWebSecurity	
+@EnableWebSecurity
 public class SecurityConfig {
 	
 	@Autowired
@@ -36,16 +36,15 @@ public class SecurityConfig {
 	        .csrf(customizer -> customizer.disable()) // Disable CSRF for testing; adjust as needed for production
 	        .authorizeHttpRequests(request -> 
 	            request
-	                //.requestMatchers("/student/addstudent", "/student/loginstudent", "/faculty/addfaculty", "/faculty/loginfaculty").permitAll() // Allow specific endpoints
-	                //.anyRequest().authenticated() // Authenticate other requests
-	            	.anyRequest().permitAll()
+	                .requestMatchers("/student/addstudent", "/student/loginstudent", "/faculty/addfaculty",
+							"/faculty/loginfaculty","/student/resetrequest","/faculty/resetrequest").permitAll() // Allow specific endpoints
+	                .anyRequest().authenticated() // Authenticate other requests
+	            	//.anyRequest().permitAll()
 	        )
 	        .httpBasic(Customizer.withDefaults())
 	        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 	        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
 	    return http.build();
-
 	}
 	
 	@Bean

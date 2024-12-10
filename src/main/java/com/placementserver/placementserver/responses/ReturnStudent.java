@@ -9,7 +9,9 @@ public class ReturnStudent {
 	private short year;
 	private String department;
 	private short semester;
-	
+	private String email;
+	private long mobileno;
+
 	public long getRollno() {
 		return rollno;
 	}
@@ -40,14 +42,26 @@ public class ReturnStudent {
 	public void setSemester(short semester) {
 		this.semester = semester;
 	}
-	
-	public ReturnStudent(Student students) {
-		super();
-		this.rollno = students.getRollno();
-		this.name = students.getName();
-		this.year = students.getYear();
-		this.department = students.getDepartment();
-		this.semester = students.getSemester();
+	public String getEmail() {
+		return email;
 	}
-	
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public long getMobileno() {
+		return mobileno;
+	}
+	public void setMobileno(long mobileno) {
+		this.mobileno = mobileno;
+	}
+
+	public ReturnStudent(Student student) {
+		this.rollno = student.getRollno();
+		this.name = student.getName();
+		this.year = student.getYear();
+		this.department = student.getDepartment();
+		this.semester = student.getSemester();
+		this.email = student.getEmail();
+		this.mobileno = student.getMobileno();
+	}
 }
