@@ -38,8 +38,8 @@ public class SecurityConfig {
 	            request
 	                .requestMatchers("/student/addstudent", "/student/loginstudent", "/faculty/addfaculty",
 							"/faculty/loginfaculty","/student/resetrequest","/faculty/resetrequest").permitAll() // Allow specific endpoints
-	                .anyRequest().authenticated() // Authenticate other requests
-	            	//.anyRequest().permitAll()
+	                //.anyRequest().authenticated() // Authenticate other requests
+	            	.anyRequest().permitAll()
 	        )
 	        .httpBasic(Customizer.withDefaults())
 	        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
