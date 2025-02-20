@@ -2,7 +2,6 @@ package com.placementserver.placementserver.event;
 
 import jakarta.persistence.*;
 
-import java.nio.file.Path;
 
 @Entity
 @Table(name = "event_file")
@@ -55,6 +54,8 @@ public class EventFile {
     public void setFilePath(String filePath) {
         this.filePath = filePath;
     }
+
+
 
     public EventFile() {
         super();

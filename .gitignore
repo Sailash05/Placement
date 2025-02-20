@@ -39,5 +39,6 @@ Thumbs.db
 *.swp
 *~
 
+.env
 
-uploads/
+src/main/resources/static/uploads/

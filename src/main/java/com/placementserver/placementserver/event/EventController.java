@@ -2,18 +2,19 @@ package com.placementserver.placementserver.event;
 
 import com.placementserver.placementserver.responses.DataResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 @RestController
 @RequestMapping("/event")
@@ -22,7 +23,7 @@ public class EventController {
     @Autowired
     EventService eventService;
 
-    private static final String UPLOAD_DIR = "uploads/";
+    private static final String UPLOAD_DIR = "uploads/events/";
 
     @PostMapping("/addevent")
     public ResponseEntity<DataResponse<String>> addEvent(
@@ -33,6 +34,7 @@ public class EventController {
             @RequestParam(value = "event-date-to", required = false) String eventDateTo,
             @RequestParam("event-time-from") String eventTimeFrom,
             @RequestParam(value = "event-time-to", required = false) String eventTimeTo,
+            @RequestParam("event-apply-link") String applyLink,
             @RequestParam("event-content") String eventContent,
             @RequestParam(value = "event-images", required = false) MultipartFile[] eventImages,
             @RequestParam("posted-by") String postedBy
@@ -45,6 +47,7 @@ public class EventController {
                 eventDateTo,
                 eventTimeFrom,
                 eventTimeTo,
+                applyLink,
                 eventContent,
                 eventImages,
                 postedBy);
@@ -55,22 +58,42 @@ public class EventController {
         else {
             return new ResponseEntity<>(response, HttpStatus.valueOf(400));
         }
-        /*
-            Files.createDirectories(Paths.get(UPLOAD_DIR));
+    }
 
-            // Save uploaded files
-           if (eventImages != null) {
-                for (MultipartFile file : eventImages) {
-                    Path filePath = Paths.get(UPLOAD_DIR + file.getOriginalFilename());
-                    Files.write(filePath, file.getBytes());
-                }
-            }
+    @GetMapping("/getevent")
+    public ResponseEntity<DataResponse<List<Event>>> getEvent(@RequestParam("offset") long offset) {
 
-            // Process other event details (You can save this to a database)
-            String responseMessage = "Event '" + eventTitle + "' added successfully!";
-            return ResponseEntity.ok(responseMessage);
+        DataResponse<List<Event>> response = eventService.getEvent(offset);
 
-        */
+        return new ResponseEntity<>(response, HttpStatus.valueOf(200));
+    }
 
+    @GetMapping("/getimage/{imgname}")
+    public ResponseEntity<Resource> getImage(@PathVariable("imgname") String filename) throws IOException {
+        String UPLOAD_DIR = "uploads/events/";
+        Path filePath = Paths.get(UPLOAD_DIR).resolve(filename).normalize();
+        if (!Files.exists(filePath)) {
+            return ResponseEntity.notFound().build();
+        }
+
+
+        Resource resource = new UrlResource(filePath.toUri());
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(resource);
+    }
+
+    @DeleteMapping("/deleteevent/{eventid}")
+    public ResponseEntity<DataResponse<String>> deleteEvent(@PathVariable long eventid) {
+
+        DataResponse<String> response = eventService.deleteEvent(eventid);
+
+        if(response.getCondition().equals("Success")) {
+            return new ResponseEntity<DataResponse<String>>(response, HttpStatus.valueOf(200));
+        }
+        else {
+            return new ResponseEntity<DataResponse<String>>(response, HttpStatus.valueOf(404));
+        }
     }
 }

@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 
 import com.placementserver.placementserver.models.Faculty;
 
+import java.util.List;
+
 @Repository
 public interface FacultyRepository extends JpaRepository<Faculty, Long>{
 	
@@ -24,4 +26,7 @@ public interface FacultyRepository extends JpaRepository<Faculty, Long>{
 					  @Param("name") String name,
 					  @Param("department") String department,
 					  @Param("email") String email);
+
+	@Query(value = "SELECT email FROM faculty WHERE email IS NOT NULL", nativeQuery = true)
+	List<String> getAllFacultyEmails();
 }

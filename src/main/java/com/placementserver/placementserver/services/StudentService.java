@@ -52,14 +52,14 @@ public class StudentService {
 		}
 		
 		if (studentRepository.existsById(students.getRollno())) {
-	        return new DataResponse<>("Failed", "Student already exist", "");
+	        return new DataResponse<>("Failed", "Student Already Exist", "");
 	    }
 		
 		students.setPassword(encoder.encode(students.getPassword()));
 		
 	    studentRepository.save(students);
 	    
-	    return new DataResponse<>("Success", "Student added successfully", "");
+	    return new DataResponse<>("Success", "Student Added Successfully", "");
 	}
 
 	public DataResponse<String> loginStudent(Student students) {
@@ -89,7 +89,7 @@ public class StudentService {
 				student.getEmail(),
 				student.getMobileno());
 		if(noOfRowsAffected >= 1) {
-			return new DataResponse<>("Success","Student details updated","");
+			return new DataResponse<>("Success","Student Details Updated","");
 		}
 		return new DataResponse<>("Failed","Wrong update","");
 	}
@@ -102,7 +102,7 @@ public class StudentService {
 		if(response.getEmail() == null && student.getEmail() == null) {
 			return new DataResponse<>("Failed","Email not found","");
 		}
-		String email = student.getEmail() == null ? response.getEmail() : student.getEmail();
+		String email = response.getEmail() == null ? student.getEmail() : response.getEmail();
 		String name = studentRepository.findByRollno(student.getRollno()).getName();
 		String token =  jwtService.generateResetToken(String.valueOf(student.getRollno()),"student","reset request");
 		emailService.sendResetRequest(name,student.getRollno(),email,token);
@@ -119,6 +119,6 @@ public class StudentService {
 		Student response = studentRepository.findByRollno(student.getRollno());
 		response.setPassword(encoder.encode(student.getPassword()));
 		studentRepository.save(response);
-		return new DataResponse<>("Success","Password changed","");
+		return new DataResponse<>("Success","Your Password has been Changed","");
 	}
 }

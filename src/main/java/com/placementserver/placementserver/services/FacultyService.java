@@ -41,13 +41,13 @@ public class FacultyService {
 	public DataResponse<String> addFaculty(Faculty faculty) {
 		
 		if(facultyRepository.existsById(faculty.getMobileno())) {
-			return new DataResponse<>("Failed", "Faculty already exist",new String());
+			return new DataResponse<>("Failed", "Faculty Already Exist",new String());
 		}
 		
 		faculty.setPassword(encoder.encode(faculty.getPassword()));
 		facultyRepository.save(faculty);
 		
-		return new DataResponse<>("Success", "Faculty added successfully",new String());
+		return new DataResponse<>("Success", "Faculty Added Successfully",new String());
 	}
 	
 	
@@ -70,21 +70,21 @@ public class FacultyService {
 
     public DataResponse<String> updateFaculty(Faculty faculty) {
 		if(!facultyRepository.existsById(faculty.getMobileno())) {
-			return new DataResponse<>("Failed","Faculty not found","");
+			return new DataResponse<>("Failed","Faculty Not Found","");
 		}
 		int noOfRowsAffected = facultyRepository.updateFaculty(faculty.getMobileno(),
 				faculty.getName(),
 				faculty.getDepartment(),
 				faculty.getEmail());
 		if(noOfRowsAffected >= 1) {
-			return new DataResponse<>("Success","Faculty details updated","");
+			return new DataResponse<>("Success","Faculty Details Updated","");
 		}
 		return new DataResponse<>("Failed","Wrong update","");
     }
 
 	public DataResponse<String> resetRequest(Faculty faculty) {
 		if(!facultyRepository.existsById(faculty.getMobileno())) {
-			return new DataResponse<>("Failed","Student Not Found", "");
+			return new DataResponse<>("Failed","Faculty Not Found", "");
 		}
 		Faculty response = facultyRepository.findByMobileno(faculty.getMobileno());
 		if(response.getEmail() == null && faculty.getEmail() == null) {
@@ -93,7 +93,7 @@ public class FacultyService {
 		String email = faculty.getEmail() == null ? response.getEmail() : faculty.getEmail();
 		String name = facultyRepository.findByMobileno(faculty.getMobileno()).getName();
 		String token =  jwtService.generateResetToken(String.valueOf(faculty.getMobileno()),"faculty","reset request");
-		emailService.sendResetRequest(name,faculty.getMobileno(),email,token);
+		emailService.sendFacultyResetRequest(name,faculty.getMobileno(),email,token);
 		return new DataResponse<>("Success","Reset token is sent to your email","");
 	}
 

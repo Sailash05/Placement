@@ -43,7 +43,7 @@ public class AnswersService {
 		Answers response = answersRepository.findByRollnoAndQuestionid(answers.getStudent().getRollno(), answers.getQuestionid());
 		
 		if(response != null) {
-			return new DataResponse<>("Failed","Already summited the answer for this question id",new String());
+			return new DataResponse<>("Failed","Already summited the answer for this question",new String());
 		}
 		
 		QuestionsTitle questionsTitle = questionsTitleRepository.findByQuestionid(answers.getQuestionid());
@@ -53,7 +53,7 @@ public class AnswersService {
 		}
 		
 		answersRepository.save(answers);
-		return new DataResponse<>("Success","Answers was summitted",new String());
+		return new DataResponse<>("Success","Your Answers was Summitted",new String());
 	}
 	
 	public DataResponse<List<ReturnAnswer>> getMark(long rollno) {
@@ -72,7 +72,7 @@ public class AnswersService {
 			ansResponse.add(returnAnswer);
 		}
 		if(ansResponse.isEmpty()) {
-			return new DataResponse<>("Failed","No Marks Available",ansResponse);
+			return new DataResponse<>("Success","No Marks Available",ansResponse);
 		}
 		
 		return new DataResponse<>("Success","Marks Obtained",ansResponse);
@@ -137,7 +137,7 @@ public class AnswersService {
 		}
 		
 		for(Object[] obj: response) {
-			UnfinishedResponse ufa = new UnfinishedResponse(((Number) obj[0]).longValue(),(String)obj[1],(String)obj[2]);
+			UnfinishedResponse ufa = new UnfinishedResponse(((Number) obj[0]).longValue(),(String)obj[1],(String)obj[2], (String)obj[3]);
 			result.add(ufa);
 		}
 		
