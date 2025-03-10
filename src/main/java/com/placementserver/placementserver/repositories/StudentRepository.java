@@ -25,4 +25,16 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
 					  @Param("department") String department,
 					  @Param("email") String email,
 					  @Param("mobileno") long mobileno);
+
+	@Modifying
+	@Transactional
+	@Query(value = "UPDATE student SET semester = semester + 1;",
+	nativeQuery = true)
+    void increaseSemester();
+
+	@Modifying
+	@Transactional
+	@Query(value = "UPDATE student SET year = year + 1;",
+	nativeQuery = true)
+	void increaseYear();
 }

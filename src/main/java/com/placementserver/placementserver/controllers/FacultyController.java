@@ -11,6 +11,8 @@ import com.placementserver.placementserver.responses.DataResponse;
 import com.placementserver.placementserver.responses.ReturnFaculty;
 import com.placementserver.placementserver.services.FacultyService;
 
+import java.util.Date;
+
 @RestController
 @RequestMapping("/faculty")
 public class FacultyController {
@@ -81,6 +83,30 @@ public class FacultyController {
 		DataResponse<String> response = facultyService.resetPassword(faculty);
 		if(response.getCondition().equals("Success")) {
 			return new ResponseEntity<>(response, HttpStatusCode.valueOf(201));
+		}
+		else {
+			return new ResponseEntity<>(response,HttpStatusCode.valueOf(403));
+		}
+	}
+
+	@PutMapping("/addadmin")
+	public ResponseEntity<DataResponse<String>> addAdmin(@RequestParam("mobileno") long mobileno,
+														 @RequestParam("admin-code") String adminCode) {
+		DataResponse<String> response = facultyService.addAdmin(mobileno, adminCode);
+		if(response.getCondition().equals("Success")) {
+			return new ResponseEntity<>(response, HttpStatusCode.valueOf(202));
+		}
+		else {
+			return new ResponseEntity<>(response,HttpStatusCode.valueOf(403));
+		}
+	}
+
+	@PutMapping("/removeadmin")
+	public ResponseEntity<DataResponse<String>> removeAdmin(@RequestParam("mobileno") long mobileno) {
+
+		DataResponse<String> response = facultyService.removeAdmin(mobileno);
+		if(response.getCondition().equals("Success")) {
+			return new ResponseEntity<>(response, HttpStatusCode.valueOf(202));
 		}
 		else {
 			return new ResponseEntity<>(response,HttpStatusCode.valueOf(403));

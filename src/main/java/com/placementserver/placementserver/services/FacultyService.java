@@ -109,4 +109,25 @@ public class FacultyService {
 		facultyRepository.save(response);
 		return new DataResponse<>("Success","Password changed","");
 	}
+
+	public DataResponse<String> addAdmin(long mobileno, String adminCode) {
+		if(!adminCode.equals("A5-W4XP-3EKU")) {
+			return new DataResponse<>("Failed","Wrong admin code","");
+		}
+		int n = facultyRepository.addAdmin(mobileno);
+		if(n == 1) {
+			return new DataResponse<>("Success","Admin added", "");
+		}
+		return new DataResponse<>("Failed","Something wrong","");
+	}
+
+	public DataResponse<String> removeAdmin(long mobileno) {
+		int n = facultyRepository.removeAdmin(mobileno);
+		if(n == 1) {
+			return new DataResponse<>("Success","Admin removed","");
+		}
+		else {
+			return new DataResponse<>("Failed","Something wrong","");
+		}
+	}
 }

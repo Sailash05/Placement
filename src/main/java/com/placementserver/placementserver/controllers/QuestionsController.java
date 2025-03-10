@@ -2,6 +2,7 @@ package com.placementserver.placementserver.controllers;
 
 import java.util.List;
 
+import com.placementserver.placementserver.models.questionrequest.QuestionRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,18 @@ public class QuestionsController {
 		
 		DataResponse<String> response = questionsService.addQuestionsFile(name, dateAndTime, file);
 		
+		if("Success".equals(response.getCondition())) {
+			return new ResponseEntity<>(response, HttpStatus.valueOf(201));
+		}
+		else {
+			return new ResponseEntity<>(response, HttpStatus.valueOf(400));
+		}
+	}
+
+	@PostMapping("/addquestion")
+	public ResponseEntity<DataResponse<String>> addQuestion(@RequestBody QuestionRequestDTO questionRequestDTO) {
+
+		DataResponse<String> response = questionsService.addQuestion(questionRequestDTO);
 		if("Success".equals(response.getCondition())) {
 			return new ResponseEntity<>(response, HttpStatus.valueOf(201));
 		}

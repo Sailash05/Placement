@@ -29,4 +29,16 @@ public interface FacultyRepository extends JpaRepository<Faculty, Long>{
 
 	@Query(value = "SELECT email FROM faculty WHERE email IS NOT NULL", nativeQuery = true)
 	List<String> getAllFacultyEmails();
+
+	@Modifying
+	@Transactional
+	@Query(value = "UPDATE faculty SET ROLE = 'ADMIN' WHERE mobileno = :mobileno",
+	nativeQuery = true)
+	int addAdmin(@Param("mobileno") long mobileno);
+
+	@Modifying
+	@Transactional
+	@Query(value = "UPDATE faculty SET ROLE = 'FACULTY' WHERE mobileno = :mobileno",
+	nativeQuery = true)
+	int removeAdmin(@Param("mobileno") long mobileno);
 }

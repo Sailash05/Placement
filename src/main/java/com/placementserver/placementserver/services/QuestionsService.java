@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.placementserver.placementserver.Schedule.DynamicTaskSchedulerService;
+import com.placementserver.placementserver.models.questionrequest.QuestionRequestDTO;
 import com.placementserver.placementserver.notification.NotificationService;
 import com.placementserver.placementserver.repositories.AnswersRepository;
 import com.placementserver.placementserver.repositories.FacultyRepository;
@@ -118,6 +119,23 @@ public class QuestionsService {
         }
 	}
 
+	public DataResponse<String> addQuestion(QuestionRequestDTO questionRequestDTO) {
+
+		QuestionsTitle questionsTitle = new QuestionsTitle(questionRequestDTO.getName(),
+				questionRequestDTO.getDateTime(),
+				"N/A");
+
+		QuestionsTitle savedQuestionTitle = questionsTitleRepository.save(questionsTitle);
+
+		List<Questions> questions = questionRequestDTO.getQuestions();
+
+		for(Questions question: questions) {
+			question.setQuestionid(savedQuestionTitle.getQuestionid());
+			questionsRepository.save(question);
+		}
+
+		return new DataResponse<>("Success","Questions Added","");
+	}
 
 	public DataResponse<List<Questions>> getQuestions(long questionNo) {
 		

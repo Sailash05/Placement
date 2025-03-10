@@ -3,6 +3,7 @@ package com.placementserver.placementserver.services;
 import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -120,5 +121,16 @@ public class StudentService {
 		response.setPassword(encoder.encode(student.getPassword()));
 		studentRepository.save(response);
 		return new DataResponse<>("Success","Your Password has been Changed","");
+	}
+
+	@Scheduled(cron = "0 0 0 1 6 *")
+	public void oddSem() {
+		studentRepository.increaseSemester();
+		studentRepository.increaseYear();
+	}
+
+	@Scheduled(cron = "0 0 0 1 1 *")
+	public void evenSem() {
+		studentRepository.increaseSemester();
 	}
 }

@@ -8,6 +8,7 @@ public class ReturnFaculty {
 	private String department;
 	private long mobileno;
 	private String email;
+	private String role;
 
 	public String getName() {
 		return name;
@@ -33,6 +34,12 @@ public class ReturnFaculty {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+	public String getRole() {
+		return role;
+	}
+	public void setRole(String role) {
+		this.role = role;
+	}
 
 	public ReturnFaculty(Faculty faculty) {
 		super();
@@ -40,6 +47,7 @@ public class ReturnFaculty {
 		this.department = faculty.getDepartment();
 		this.mobileno = faculty.getMobileno();
 		this.email = faculty.getEmail();
+		this.role = faculty.getRole();
 	}
 	
 }
