@@ -1,11 +1,6 @@
 package com.placementserver.placementserver.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name="question")
@@ -17,7 +12,8 @@ public class Questions {
 	private long uniqueid;
 	@Column(name="questionid")
 	private long questionid;
-	@Column(name="question")
+	@Lob
+	@Column(name="question", columnDefinition = "TEXT")
 	private String question;
 	@Column(name="option_a")
 	private String a;
