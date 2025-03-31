@@ -11,6 +11,7 @@ public class ReturnStudent {
 	private short semester;
 	private String email;
 	private long mobileno;
+	private String leetcodeUserName;
 
 	public long getRollno() {
 		return rollno;
@@ -54,6 +55,12 @@ public class ReturnStudent {
 	public void setMobileno(long mobileno) {
 		this.mobileno = mobileno;
 	}
+	public String getLeetcodeUserName() {
+		return leetcodeUserName;
+	}
+	public void setLeetcodeUserName(String leetcodeUserName) {
+		this.leetcodeUserName = leetcodeUserName;
+	}
 
 	public ReturnStudent(Student student) {
 		this.rollno = student.getRollno();
@@ -63,5 +70,6 @@ public class ReturnStudent {
 		this.semester = student.getSemester();
 		this.email = student.getEmail();
 		this.mobileno = student.getMobileno();
+		this.leetcodeUserName = student.getLeetcodeUserName();
 	}
 }

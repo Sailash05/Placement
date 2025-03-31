@@ -17,14 +17,16 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
 	@Modifying
 	@Transactional
 	@Query(value = "UPDATE student SET name = :name, year = :year, department = :department," +
-			" email = :email, mobileno = :mobileno WHERE rollno = :rollno",
+			" email = :email, mobileno = :mobileno, leetcode_username = :leetcodeUserName" +
+			" WHERE rollno = :rollno",
 	nativeQuery = true)
 	int updateStudent(@Param("rollno") long rollno,
-					  @Param("name") String name,
-					  @Param("year") short year,
-					  @Param("department") String department,
-					  @Param("email") String email,
-					  @Param("mobileno") long mobileno);
+                      @Param("name") String name,
+                      @Param("year") short year,
+                      @Param("department") String department,
+                      @Param("email") String email,
+                      @Param("mobileno") long mobileno,
+					  @Param("leetcodeUserName") String leetcodeUserName);
 
 	@Modifying
 	@Transactional

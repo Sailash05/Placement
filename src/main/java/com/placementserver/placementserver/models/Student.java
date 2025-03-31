@@ -29,6 +29,8 @@ public class Student {
 	private String email;
 	@Column(name = "mobileno")
 	private long mobileno;
+	@Column(name = "leetcode_username")
+	private String leetcodeUserName;
 
 	public long getRollno() {
 		return rollno;
@@ -78,12 +80,18 @@ public class Student {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+	public String getLeetcodeUserName() {
+		return leetcodeUserName;
+	}
+	public void setLeetcodeUserName(String leetcodeUserName) {
+		this.leetcodeUserName = leetcodeUserName;
+}
 
 	public Student() {
 		super();
 	}
 
-	public Student(long rollno, String name, short year, short semester, String department, String password, String email, long mobileno) {
+	public Student(long rollno, String name, short year, short semester, String department, String password, String email, long mobileno, String leetcodeUserName) {
 		this.rollno = rollno;
 		this.name = name;
 		this.year = year;
@@ -92,5 +100,6 @@ public class Student {
 		this.password = password;
 		this.email = email;
 		this.mobileno = mobileno;
+		this.leetcodeUserName = leetcodeUserName;
 	}
 }

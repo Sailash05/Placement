@@ -88,7 +88,8 @@ public class StudentService {
 				student.getYear(),
 				student.getDepartment(),
 				student.getEmail(),
-				student.getMobileno());
+				student.getMobileno(),
+				student.getLeetcodeUserName());
 		if(noOfRowsAffected >= 1) {
 			return new DataResponse<>("Success","Student Details Updated","");
 		}
