@@ -23,7 +23,7 @@ public class EmailService {
             message.setSubject("Reset Your Password");
             message.setText("Hello "+name+"\nYour rollno : "+rollno+
                     "\n\nWe received a request to reset your password. If you made this request, please click the link below to reset your password:" +
-                    "\n\nhttp://192.168.1.5:5500/PlacementApp/passwordreset/studentpasswordreset.html?token="+token+
+                    "\n\nhttp://192.168.1.6:5500/PlacementApp/passwordreset/studentpasswordreset.html?token="+token+
                     "\n\nIf you did not request a password reset, you can ignore this email. Your account is still secure." +
                     "\n\nFor security reasons, this link will expire in 10 minutes." +
                     "\n\nIf you encounter any issues, feel free to contact us at placement.dto@gmail.com." +
