@@ -1,5 +1,6 @@
 package com.placementserver.placementserver.controllers;
 
+import com.placementserver.placementserver.models.Questions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -11,7 +12,10 @@ import com.placementserver.placementserver.responses.DataResponse;
 import com.placementserver.placementserver.responses.ReturnFaculty;
 import com.placementserver.placementserver.services.FacultyService;
 
+import javax.xml.crypto.Data;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/faculty")
@@ -110,6 +114,19 @@ public class FacultyController {
 		}
 		else {
 			return new ResponseEntity<>(response,HttpStatusCode.valueOf(403));
+		}
+	}
+
+	@GetMapping("/autogenerate")
+	public ResponseEntity<DataResponse<List<Map<String, Object>>>> generateQuestions(@RequestParam("topic") String topic,
+																		   @RequestParam("count") long count) {
+
+		DataResponse<List<Map<String, Object>>> response = facultyService.generateQuestions(topic, count);
+		if(response.getCondition().equals("Success")) {
+			return new ResponseEntity<>(response, HttpStatusCode.valueOf(200));
+		}
+		else {
+			return new ResponseEntity<>(response, HttpStatusCode.valueOf(400));
 		}
 	}
 }
