@@ -18,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
+import io.github.cdimascio.dotenv.Dotenv;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,8 +42,7 @@ public class FacultyService {
 
 	private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
-	@Value("${GEMINI_API_KEY}")
-	private String geminiApiKey;
+	private static final Dotenv dotenv = Dotenv.configure().load();
 
 	@Autowired
 	private RestTemplate restTemplate;
@@ -148,7 +148,7 @@ public class FacultyService {
 
 
 	public DataResponse<List<Map<String, Object>>> generateQuestions(String topic, long count) {
-		String apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + geminiApiKey;
+		String apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + dotenv.get("GEMINI_API_KEY");
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
